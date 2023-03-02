@@ -1,17 +1,17 @@
 
 <!DOCTYPE html>
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Introduction &#8212; QFlow  documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Contributing" href="contributing.html" />
@@ -65,31 +65,44 @@ qflow workflow new --workflow-name example_workflow
 For example, we may consider the following class describing a vector.</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">workflows/example_workflow/workflow.py</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="nd">@dataclass</span>
-<span class="linenos">2</span><span class="k">class</span> <span class="nc">Vector</span><span class="p">:</span>
-<span class="linenos">3</span>    <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Vector</span><span class="p">:</span>
+    <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 </div>
 <p>In order to track and pass artifacts between machines used to run the workflow, we need to introduce the notion of a
 factory. Factory is a class implementing <code class="docutils literal notranslate"><span class="pre">qflow.core.protocols.ArtifactFactory</span></code> protocol; it needs to support <code class="docutils literal notranslate"><span class="pre">save</span></code>
 and <code class="docutils literal notranslate"><span class="pre">load</span></code> operations. For example, we may create the following factory for the vector class we described above.</p>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">workflows/example_workflow/workflow.py</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 5</span><span class="k">class</span> <span class="nc">VectorFactory</span><span class="p">:</span>
-<span class="linenos"> 6</span>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">ptyping</span><span class="o">.</span><span class="n">AnyPath</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vector</span><span class="p">:</span>
-<span class="linenos"> 7</span>        <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<span class="linenos"> 8</span>            <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)))</span>
-<span class="linenos"> 9</span>
-<span class="linenos">10</span>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
-<span class="linenos">11</span>        <span class="bp">self</span><span class="p">,</span>
-<span class="linenos">12</span>        <span class="n">artifact</span><span class="p">:</span> <span class="n">Vector</span><span class="p">,</span>
-<span class="linenos">13</span>        <span class="n">path</span><span class="p">:</span> <span class="n">ptyping</span><span class="o">.</span><span class="n">AnyPath</span><span class="p">,</span>
-<span class="linenos">14</span>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vector</span><span class="p">:</span>
-<span class="linenos">15</span>        <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<span class="linenos">16</span>            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">artifact</span><span class="o">.</span><span class="n">data</span><span class="p">)))</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">VectorFactory</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">ptyping</span><span class="o">.</span><span class="n">AnyPath</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vector</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">artifact</span><span class="p">:</span> <span class="n">Vector</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">:</span> <span class="n">ptyping</span><span class="o">.</span><span class="n">AnyPath</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vector</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">artifact</span><span class="o">.</span><span class="n">data</span><span class="p">)))</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -98,21 +111,33 @@ and <code class="docutils literal notranslate"><span class="pre">load</span></co
 <p>To tell the framework that you want to us a factory for a specific class, you may use <code class="docutils literal notranslate"><span class="pre">add_factory</span></code> decorator.</p>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">workflows/example_workflow/workflow.py</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="linenos"> 4</span><span class="nd">@registry</span><span class="o">.</span><span class="n">add_factory</span>
-</span><span class="linenos"> 5</span><span class="k">class</span> <span class="nc">VectorFactory</span><span class="p">:</span>
-<span class="linenos"> 6</span>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">ptyping</span><span class="o">.</span><span class="n">AnyPath</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vector</span><span class="p">:</span>
-<span class="linenos"> 7</span>        <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<span class="linenos"> 8</span>            <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)))</span>
-<span class="linenos"> 9</span>
-<span class="linenos">10</span>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
-<span class="linenos">11</span>        <span class="bp">self</span><span class="p">,</span>
-<span class="linenos">12</span>        <span class="n">artifact</span><span class="p">:</span> <span class="n">Vector</span><span class="p">,</span>
-<span class="linenos">13</span>        <span class="n">path</span><span class="p">:</span> <span class="n">ptyping</span><span class="o">.</span><span class="n">AnyPath</span><span class="p">,</span>
-<span class="linenos">14</span>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vector</span><span class="p">:</span>
-<span class="linenos">15</span>        <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<span class="linenos">16</span>            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">artifact</span><span class="o">.</span><span class="n">data</span><span class="p">)))</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="nd">@registry</span><span class="o">.</span><span class="n">add_factory</span>
+</span><span class="k">class</span> <span class="nc">VectorFactory</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">ptyping</span><span class="o">.</span><span class="n">AnyPath</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vector</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">artifact</span><span class="p">:</span> <span class="n">Vector</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">:</span> <span class="n">ptyping</span><span class="o">.</span><span class="n">AnyPath</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vector</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">artifact</span><span class="o">.</span><span class="n">data</span><span class="p">)))</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 </div>
 </div>
 <div class="section" id="steps">
@@ -122,14 +147,19 @@ deterministic and it shouldn’t have side-effects). The step logic needs to be 
 For example, the following step adds up two vectors.</p>
 <div class="literal-block-wrapper docutils container" id="id4">
 <div class="code-block-caption"><span class="caption-text">workflows/example_workflow/workflow.py</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">17</span><span class="nd">@qflow</span><span class="o">.</span><span class="n">step</span>
-<span class="linenos">18</span><span class="k">class</span> <span class="nc">Add</span><span class="p">:</span>
-<span class="linenos">19</span>    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">:</span> <span class="n">Vector</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="n">Vector</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vector</span><span class="p">:</span>
-<span class="linenos">20</span>        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span>
-<span class="linenos">21</span>            <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">zip</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">data</span><span class="p">)))</span>
-<span class="linenos">22</span>        <span class="p">)</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>17
+18
+19
+20
+21
+22</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@qflow</span><span class="o">.</span><span class="n">step</span>
+<span class="k">class</span> <span class="nc">Add</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">:</span> <span class="n">Vector</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="n">Vector</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vector</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">zip</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">data</span><span class="p">)))</span>
+        <span class="p">)</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -139,20 +169,31 @@ use <code class="docutils literal notranslate"><span class="pre">from</span> <sp
 <p>Some steps may have several parameters, for example, the following step compute linear combination of vectors.</p>
 <div class="literal-block-wrapper docutils container" id="id5">
 <div class="code-block-caption"><span class="caption-text">workflows/example_workflow/workflow.py</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">23</span><span class="nd">@qflow</span><span class="o">.</span><span class="n">step</span>
-<span class="linenos">24</span><span class="k">class</span> <span class="nc">LinearCombination</span><span class="p">:</span>
-<span class="linenos">25</span>    <span class="n">coef_0</span><span class="p">:</span> <span class="nb">float</span>
-<span class="linenos">26</span>    <span class="n">coef_1</span><span class="p">:</span> <span class="nb">float</span>
-<span class="linenos">27</span>
-<span class="linenos">28</span>    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">:</span> <span class="n">Vector</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="n">Vector</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vector</span><span class="p">:</span>
-<span class="linenos">29</span>        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span>
-<span class="linenos">30</span>            <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span>
-<span class="linenos">31</span>                <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">coef_0</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">coef_1</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-<span class="linenos">32</span>                <span class="nb">zip</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">data</span><span class="p">),</span>
-<span class="linenos">33</span>            <span class="p">))</span>
-<span class="linenos">34</span>        <span class="p">)</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@qflow</span><span class="o">.</span><span class="n">step</span>
+<span class="k">class</span> <span class="nc">LinearCombination</span><span class="p">:</span>
+    <span class="n">coef_0</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">coef_1</span><span class="p">:</span> <span class="nb">float</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">:</span> <span class="n">Vector</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="n">Vector</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vector</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">coef_0</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">coef_1</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="nb">zip</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">data</span><span class="p">),</span>
+            <span class="p">))</span>
+        <span class="p">)</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 </div>
 <p>Note that you can define parameters as you would normally do in dataclasses.</p>
 <div class="admonition note">
@@ -166,23 +207,37 @@ So if your class requires configuration treat it as <code class="docutils litera
 <p>To define a workflow one needs to create a class and decorate it using <code class="docutils literal notranslate"><span class="pre">qflow.workflow</span></code>.</p>
 <div class="literal-block-wrapper docutils container" id="id6">
 <div class="code-block-caption"><span class="caption-text">workflows/example_workflow/workflow.py</span><a class="headerlink" href="#id6" title="Permalink to this code">¶</a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="linenos">39</span><span class="nd">@qflow</span><span class="o">.</span><span class="n">workflow</span>
-</span><span class="hll"><span class="linenos">40</span><span class="k">class</span> <span class="nc">ExampleWorkflow</span><span class="p">:</span>
-</span><span class="linenos">41</span>    <span class="n">coef_0</span><span class="p">:</span> <span class="nb">float</span>
-<span class="linenos">42</span>    <span class="n">coef_1</span><span class="p">:</span> <span class="nb">float</span>
-<span class="linenos">43</span>
-<span class="linenos">44</span>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-<span class="linenos">45</span>        <span class="bp">self</span><span class="p">,</span>
-<span class="linenos">46</span>        <span class="n">a</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">factory_load</span><span class="p">(</span><span class="s2">&quot;a.txt&quot;</span><span class="p">),</span>
-<span class="linenos">47</span>        <span class="n">b</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">factory_load</span><span class="p">(</span><span class="s2">&quot;b.txt&quot;</span><span class="p">),</span>
-<span class="linenos">48</span>        <span class="n">c</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">factory_load</span><span class="p">(</span><span class="s2">&quot;c.txt&quot;</span><span class="p">),</span>
-<span class="linenos">49</span>    <span class="p">):</span>
-<span class="linenos">50</span>        <span class="k">return</span> <span class="n">LinearCombination</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coef_0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coef_1</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-<span class="linenos">51</span>            <span class="n">Add</span><span class="p">()</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span>
-<span class="linenos">52</span>            <span class="n">c</span><span class="p">,</span>
-<span class="linenos">53</span>        <span class="p">)</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="nd">@qflow</span><span class="o">.</span><span class="n">workflow</span>
+</span><span class="hll"><span class="k">class</span> <span class="nc">ExampleWorkflow</span><span class="p">:</span>
+</span>    <span class="n">coef_0</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">coef_1</span><span class="p">:</span> <span class="nb">float</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">a</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">factory_load</span><span class="p">(</span><span class="s2">&quot;a.txt&quot;</span><span class="p">),</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">factory_load</span><span class="p">(</span><span class="s2">&quot;b.txt&quot;</span><span class="p">),</span>
+        <span class="n">c</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">factory_load</span><span class="p">(</span><span class="s2">&quot;c.txt&quot;</span><span class="p">),</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="n">LinearCombination</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coef_0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coef_1</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="n">Add</span><span class="p">()</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span>
+            <span class="n">c</span><span class="p">,</span>
+        <span class="p">)</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -194,44 +249,72 @@ For example, if a workflow has the following <code class="docutils literal notra
 <code class="docutils literal notranslate"><span class="pre">a.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">b.txt</span></code>, and <code class="docutils literal notranslate"><span class="pre">c.txt</span></code>, respectively and perform computation on them.</p>
 <div class="literal-block-wrapper docutils container" id="id7">
 <div class="code-block-caption"><span class="caption-text">workflows/example_workflow/workflow.py</span><a class="headerlink" href="#id7" title="Permalink to this code">¶</a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">39</span><span class="nd">@qflow</span><span class="o">.</span><span class="n">workflow</span>
-<span class="linenos">40</span><span class="k">class</span> <span class="nc">ExampleWorkflow</span><span class="p">:</span>
-<span class="linenos">41</span>    <span class="n">coef_0</span><span class="p">:</span> <span class="nb">float</span>
-<span class="linenos">42</span>    <span class="n">coef_1</span><span class="p">:</span> <span class="nb">float</span>
-<span class="linenos">43</span>
-<span class="linenos">44</span>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-<span class="linenos">45</span>        <span class="bp">self</span><span class="p">,</span>
-<span class="hll"><span class="linenos">46</span>        <span class="n">a</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">factory_load</span><span class="p">(</span><span class="s2">&quot;a.txt&quot;</span><span class="p">),</span>
-</span><span class="hll"><span class="linenos">47</span>        <span class="n">b</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">factory_load</span><span class="p">(</span><span class="s2">&quot;b.txt&quot;</span><span class="p">),</span>
-</span><span class="hll"><span class="linenos">48</span>        <span class="n">c</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">factory_load</span><span class="p">(</span><span class="s2">&quot;c.txt&quot;</span><span class="p">),</span>
-</span><span class="linenos">49</span>    <span class="p">):</span>
-<span class="linenos">50</span>        <span class="k">return</span> <span class="n">LinearCombination</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coef_0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coef_1</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-<span class="linenos">51</span>            <span class="n">Add</span><span class="p">()</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span>
-<span class="linenos">52</span>            <span class="n">c</span><span class="p">,</span>
-<span class="linenos">53</span>        <span class="p">)</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@qflow</span><span class="o">.</span><span class="n">workflow</span>
+<span class="k">class</span> <span class="nc">ExampleWorkflow</span><span class="p">:</span>
+    <span class="n">coef_0</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">coef_1</span><span class="p">:</span> <span class="nb">float</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+<span class="hll">        <span class="n">a</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">factory_load</span><span class="p">(</span><span class="s2">&quot;a.txt&quot;</span><span class="p">),</span>
+</span><span class="hll">        <span class="n">b</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">factory_load</span><span class="p">(</span><span class="s2">&quot;b.txt&quot;</span><span class="p">),</span>
+</span><span class="hll">        <span class="n">c</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">factory_load</span><span class="p">(</span><span class="s2">&quot;c.txt&quot;</span><span class="p">),</span>
+</span>    <span class="p">):</span>
+        <span class="k">return</span> <span class="n">LinearCombination</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coef_0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coef_1</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="n">Add</span><span class="p">()</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span>
+            <span class="n">c</span><span class="p">,</span>
+        <span class="p">)</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 </div>
 <p>Finally, similarly to steps, workflows may have parameters.</p>
 <div class="literal-block-wrapper docutils container" id="id8">
 <div class="code-block-caption"><span class="caption-text">workflows/example_workflow/workflow.py</span><a class="headerlink" href="#id8" title="Permalink to this code">¶</a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">39</span><span class="nd">@qflow</span><span class="o">.</span><span class="n">workflow</span>
-<span class="linenos">40</span><span class="k">class</span> <span class="nc">ExampleWorkflow</span><span class="p">:</span>
-<span class="hll"><span class="linenos">41</span>    <span class="n">coef_0</span><span class="p">:</span> <span class="nb">float</span>
-</span><span class="hll"><span class="linenos">42</span>    <span class="n">coef_1</span><span class="p">:</span> <span class="nb">float</span>
-</span><span class="linenos">43</span>
-<span class="linenos">44</span>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-<span class="linenos">45</span>        <span class="bp">self</span><span class="p">,</span>
-<span class="linenos">46</span>        <span class="n">a</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">factory_load</span><span class="p">(</span><span class="s2">&quot;a.txt&quot;</span><span class="p">),</span>
-<span class="linenos">47</span>        <span class="n">b</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">factory_load</span><span class="p">(</span><span class="s2">&quot;b.txt&quot;</span><span class="p">),</span>
-<span class="linenos">48</span>        <span class="n">c</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">factory_load</span><span class="p">(</span><span class="s2">&quot;c.txt&quot;</span><span class="p">),</span>
-<span class="linenos">49</span>    <span class="p">):</span>
-<span class="linenos">50</span>        <span class="k">return</span> <span class="n">LinearCombination</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coef_0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coef_1</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-<span class="linenos">51</span>            <span class="n">Add</span><span class="p">()</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span>
-<span class="linenos">52</span>            <span class="n">c</span><span class="p">,</span>
-<span class="linenos">53</span>        <span class="p">)</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@qflow</span><span class="o">.</span><span class="n">workflow</span>
+<span class="k">class</span> <span class="nc">ExampleWorkflow</span><span class="p">:</span>
+<span class="hll">    <span class="n">coef_0</span><span class="p">:</span> <span class="nb">float</span>
+</span><span class="hll">    <span class="n">coef_1</span><span class="p">:</span> <span class="nb">float</span>
+</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">a</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">factory_load</span><span class="p">(</span><span class="s2">&quot;a.txt&quot;</span><span class="p">),</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">factory_load</span><span class="p">(</span><span class="s2">&quot;b.txt&quot;</span><span class="p">),</span>
+        <span class="n">c</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="n">factory_load</span><span class="p">(</span><span class="s2">&quot;c.txt&quot;</span><span class="p">),</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="n">LinearCombination</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coef_0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coef_1</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="n">Add</span><span class="p">()</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span>
+            <span class="n">c</span><span class="p">,</span>
+        <span class="p">)</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 </div>
 </div>
 </div>
@@ -338,7 +421,7 @@ Moreover if exported runtime information is a series than we will be able to dis
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -360,7 +443,7 @@ Moreover if exported runtime information is a series than we will be able to dis
       &copy;2022, Alexander Knop.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

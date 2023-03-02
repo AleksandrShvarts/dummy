@@ -20,7 +20,6 @@ jobs:
               docs-folder: "docs/source"
         - name: Commit documentation changes
           run: |
-              touch .nojekyll
               git config --local user.email "action@github.com"
               git config --local user.name "GitHub Action"
               git add .

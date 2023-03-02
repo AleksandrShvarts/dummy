@@ -30,5 +30,4 @@ jobs:
           uses: ad-m/github-push-action@master
           with:
             branch: dev
-            directory: dev
             github_token: ${{ secrets.GITHUB_TOKEN }}

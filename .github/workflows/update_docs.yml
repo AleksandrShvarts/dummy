@@ -8,10 +8,10 @@ on:
       - dev
     tags:
         - 'v*'
-permissions: read-all|write-all
 jobs:
   update-docs:
     runs-on: ubuntu-latest
+    permissions: read-all|write-all
     steps:
         - uses: actions/checkout@v1
         - uses: ammaraskar/sphinx-action@master

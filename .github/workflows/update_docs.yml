@@ -8,6 +8,7 @@ on:
       - dev
     tags:
         - 'v*'
+permissions: read-all|write-all
 jobs:
   update-docs:
     runs-on: ubuntu-latest

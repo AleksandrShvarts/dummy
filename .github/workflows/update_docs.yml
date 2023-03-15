@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - dev
+  create:
+    tags:
+        - 'v*'
 jobs:
   update-docs:
     runs-on: ubuntu-latest

@@ -24,7 +24,7 @@ jobs:
             git checkout dev
             if $(git merge-base --is-ancestor $commit HEAD);
             then $branch="dev"
-            else $branch="not dev"
+            else $branch="notDev"
             fi
             echo "::set-output name=branch::$branch"
             echo "Branch is $branch. Commit is $commit. GitRef is ${{ github.ref }}"

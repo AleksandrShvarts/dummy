@@ -20,11 +20,11 @@ jobs:
           id: check_step
           run: |
             if [[ ${{ github.ref }} == refs/tags/* ]];then
-            commitId = $(git rev-list -n 1 ${{ github.ref }})
+            commit=$(git rev-list -n 1 ${{ github.ref }})
             git checkout dev
-            if $(git merge-base --is-ancestor $commitId HEAD);
-            then $branch = "dev"
-            else $branch = "not dev"
+            if $(git merge-base --is-ancestor $commit HEAD);
+            then $branch="dev"
+            else $branch="not dev"
             fi
             echo "::set-output name=branch::$branch"
             echo "Branch is $branch. Commit is $commit. GitRef is ${{ github.ref }}"

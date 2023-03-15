@@ -23,6 +23,11 @@ jobs:
             branch=${raw##*/}
             echo "::set-output name=branch::$branch"
             echo "Branch is $branch."
+  print:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo branch
+        run: echo "${{ github.event.base_ref }}"      
   update-docs:
     runs-on: ubuntu-latest
     needs: check # Wait for check step to finish

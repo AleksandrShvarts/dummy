@@ -23,12 +23,17 @@ jobs:
             commit=$(git rev-list -n 1 ${{ github.ref }})
             git checkout dev
             #Check if tags's branch - dev
-            $(git merge-base --is-ancestor $commit HEAD 2>/dev/null)
-            isDev=$?
-            if (( isDev==0 ));then 
-            branch="dev"
-            else branch="notDev"
-            fi
+            echo "If condition value: $(git merge-base --is-ancestor $commit HEAD 2>/dev/null)"
+            function isDev(){
+               $(git merge-base --is-ancestor $commit HEAD 2>/dev/null)
+               code=$?
+             if (( code==0 ));then 
+             branch="dev"
+             else branch="notDev"
+             fi
+             return 0
+            }
+            isDev() || true
             echo "::set-output name=branch::$branch"
             echo "Branch is $branch. Commit is $commit. GitRef is ${{ github.ref }}"
             else

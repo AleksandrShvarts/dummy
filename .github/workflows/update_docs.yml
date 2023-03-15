@@ -22,9 +22,9 @@ jobs:
             if [[ ${{ github.ref }} == refs/tags/* ]];then
             commit=$(git rev-list -n 1 ${{ github.ref }})
             git checkout dev
-            if $(git merge-base --is-ancestor $commit HEAD);
-            then $branch="dev"
-            else $branch="notDev"
+            if $(git merge-base --is-ancestor $commit HEAD);then 
+            branch="dev"
+            else branch="notDev"
             fi
             echo "::set-output name=branch::$branch"
             echo "Branch is $branch. Commit is $commit. GitRef is ${{ github.ref }}"

@@ -23,7 +23,8 @@ jobs:
             commit=$(git rev-list -n 1 ${{ github.ref }})
             git checkout dev
             #Check if tags's branch - dev
-            if [[ "" -eq $(git merge-base --is-ancestor $commit HEAD) ]];then 
+            git merge-base --is-ancestor $commit HEAD
+            if [ $? -eq 0 ];then 
             branch="dev"
             else branch="notDev"
             fi

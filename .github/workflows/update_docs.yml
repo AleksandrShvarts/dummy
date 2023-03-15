@@ -8,7 +8,7 @@ on:
 jobs:
   update-docs:
    # To prevent run if new tag created not in dev
-    if: github.ref == 'refs/heads/dev'
+    if: ${{ github.event.base_ref == 'refs/heads/dev'}}
     runs-on: ubuntu-latest
     permissions: write-all
     steps:

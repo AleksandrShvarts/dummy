@@ -19,10 +19,23 @@ jobs:
         - name: Get current branch
           id: check_step
           run: |
+            
+            if [[ ${{ github.ref }} == refs/tags/* ]];
+            then
+            commit = $(git rev-list -n 1 ${{ github.ref }})
+            git checkout dev
+            if $(git merge-base --is-ancestor $commit HEAD);
+            then $branch = dev
+            else $branch = "not dev"
+            fi
+            echo "::set-output name=branch::$branch"
+            echo "Branch is $branch. Commit is $commit. GitRef is ${{ github.ref }}"
+            else
             raw=$(git branch -r --contains ${{ github.ref }})
             branch=${raw##*/}
             echo "::set-output name=branch::$branch"
-            echo "Branch is $branch. Raw is $raw. GitRef is ${{ github.ref }}"
+            echo "Branch is $branch. GitRef is ${{ github.ref }}"
+            fi           
   update-docs:
     runs-on: ubuntu-latest
     needs: check # Wait for check step to finish

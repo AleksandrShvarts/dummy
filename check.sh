@@ -1,5 +1,8 @@
 #!/bin/bash
-if $(git merge-base --is-ancestor $1 HEAD);
+$(git merge-base --is-ancestor $1 HEAD 2>/dev/null)
+isDev=$?
+echo $isDev
+if (( isDev==0 )); 
 then echo "true"
 else echo "false"
 fi

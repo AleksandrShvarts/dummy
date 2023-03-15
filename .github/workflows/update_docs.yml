@@ -3,12 +3,8 @@ on:
   push:
     branches:
       - dev
-  create:
-    tags:
-        - 'v*'
 jobs:
   update-docs:
-    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
@@ -21,7 +17,6 @@ jobs:
           run: |
               git config --local user.email "action@github.com"
               git config --local user.name "GitHub Action"
-              git pull
               git add .
               git commit -m "Update documentation" -a || true
               # The above command will fail if no changes were present, so we ignore

@@ -33,7 +33,7 @@ jobs:
              fi
              return 0
             }
-            isDev() || true
+            isDev || true
             echo "::set-output name=branch::$branch"
             echo "Branch is $branch. Commit is $commit. GitRef is ${{ github.ref }}"
             else

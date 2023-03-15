@@ -24,7 +24,7 @@ jobs:
             git checkout dev
             #Check if tags's branch - dev
             echo "If condition value: $(git merge-base --is-ancestor $commit HEAD 2>/dev/null)"
-            if [[ 0==$(git merge-base --is-ancestor $commit HEAD 2>/dev/null) ]];then 
+            if ( $(git merge-base --is-ancestor $commit HEAD 2>/dev/null) );then 
             branch="dev"
             else branch="notDev"
             fi

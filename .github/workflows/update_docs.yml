@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Echo branch
-        run: echo "${{ github.event.base_ref }}"      
+        run: echo "${{ github.base_ref }}"      
   update-docs:
     runs-on: ubuntu-latest
     needs: check # Wait for check step to finish

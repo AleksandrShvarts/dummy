@@ -27,7 +27,8 @@ jobs:
             function isDev(){
                $(git merge-base --is-ancestor $commit HEAD 2>/dev/null)
                code=$?
-             if (( code==0 ));then 
+               echo "Exit code: $code"
+             if (( $code==0 ));then 
              branch="dev"
              else branch="notDev"
              fi

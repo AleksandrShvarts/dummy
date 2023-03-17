@@ -18,30 +18,29 @@ jobs:
         - name: Get current branch
           id: check_step
           run: |
-            #check what was a trigger 
-            if [[ ${{ github.ref }} == refs/tags/* ]];then
-            commit=$(git rev-list -n 1 ${{ github.ref }})
-            git checkout dev
-            #Check if tags's branch - dev
-            echo "If condition value: $(git merge-base --is-ancestor $commit HEAD 2>/dev/null)"
-            function isDev(){
-               $(git merge-base --is-ancestor $commit HEAD 2>/dev/null)
-               code=$?
-               echo "Exit code: $code"
-             if (( $code==0 ));then 
-             branch="dev"
-             else branch="notDev"
-             fi
-             return 0
-            }
-            isDev || true
-            echo "::set-output name=branch::$branch"
-            echo "Branch is $branch. Commit is $commit. GitRef is ${{ github.ref }}"
+            # Check what was a trigger 
+            if [[ ${{ github.ref }} == refs/tags/* ]]; then
+                commit=$(git rev-list -n 1 ${{ github.ref }})
+                git checkout dev
+                # Check if tags's branch - dev
+                function isDev(){
+                   $(git merge-base --is-ancestor $commit HEAD 2>/dev/null)
+                   code=$?
+                   echo "Exit code: $code"
+                   if (( $code==0 ));then 
+                      branch="dev"
+                   else branch="notDev"
+                   fi
+                   return 0
+                }
+                isDev || true
+                cho "::set-output name=branch::$branch"
+                echo "Branch is $branch. Commit is $commit. GitRef is ${{ github.ref }}"
             else
-            raw=$(git branch -r --contains ${{ github.ref }})
-            branch=${raw##*/}
-            echo "::set-output name=branch::$branch"
-            echo "Branch is $branch. GitRef is ${{ github.ref }}"
+                raw=$(git branch -r --contains ${{ github.ref }})
+                branch=${raw##*/}
+                echo "::set-output name=branch::$branch"
+                echo "Branch is $branch. GitRef is ${{ github.ref }}"
             fi           
   update-docs:
     runs-on: ubuntu-latest

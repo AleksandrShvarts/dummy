@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - dev 
+  release:
+    types: [released]    
 jobs:
   update-docs:
     runs-on: ubuntu-latest

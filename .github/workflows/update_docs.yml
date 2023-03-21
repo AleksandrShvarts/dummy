@@ -1,9 +1,9 @@
+name: Release
 on:
   release:
     types: [released]
   workflow_dispatch: ~
-
-name: Release
+  
 env:
   CACHE_VERSION: 2
   DEFAULT_PYTHON: 3.8

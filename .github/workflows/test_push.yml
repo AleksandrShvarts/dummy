@@ -1,10 +1,8 @@
-name: Update documentation 2
+name: Update documentation
 on:
   push:
     branches:
-      - dev
-  release:
-    types: [published]     
+      - dev 
 jobs:
   update-docs:
     runs-on: ubuntu-latest
